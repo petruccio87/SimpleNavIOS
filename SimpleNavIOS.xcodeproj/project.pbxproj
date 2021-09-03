@@ -13,6 +13,8 @@
 		8449E45B26E0D2A70082AD03 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8449E45A26E0D2A70082AD03 /* Preview Assets.xcassets */; };
 		8449E46626E0D2A80082AD03 /* SimpleNavIOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8449E46526E0D2A80082AD03 /* SimpleNavIOSTests.swift */; };
 		8449E47126E0D2A80082AD03 /* SimpleNavIOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8449E47026E0D2A80082AD03 /* SimpleNavIOSUITests.swift */; };
+		8449E47F26E0DF2D0082AD03 /* LocatioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8449E47E26E0DF2D0082AD03 /* LocatioViewModel.swift */; };
+		8449E48126E2243C0082AD03 /* LocationDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8449E48026E2243C0082AD03 /* LocationDataModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,8 @@
 		8449E46C26E0D2A80082AD03 /* SimpleNavIOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleNavIOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8449E47026E0D2A80082AD03 /* SimpleNavIOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNavIOSUITests.swift; sourceTree = "<group>"; };
 		8449E47226E0D2A80082AD03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8449E47E26E0DF2D0082AD03 /* LocatioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocatioViewModel.swift; sourceTree = "<group>"; };
+		8449E48026E2243C0082AD03 /* LocationDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,7 +100,9 @@
 			isa = PBXGroup;
 			children = (
 				8449E45326E0D29C0082AD03 /* SimpleNavIOSApp.swift */,
+				8449E48026E2243C0082AD03 /* LocationDataModel.swift */,
 				8449E45526E0D29C0082AD03 /* ContentView.swift */,
+				8449E47E26E0DF2D0082AD03 /* LocatioViewModel.swift */,
 				8449E45726E0D2A70082AD03 /* Assets.xcassets */,
 				8449E45C26E0D2A70082AD03 /* Info.plist */,
 				8449E45926E0D2A70082AD03 /* Preview Content */,
@@ -261,6 +267,8 @@
 			files = (
 				8449E45626E0D29C0082AD03 /* ContentView.swift in Sources */,
 				8449E45426E0D29C0082AD03 /* SimpleNavIOSApp.swift in Sources */,
+				8449E48126E2243C0082AD03 /* LocationDataModel.swift in Sources */,
+				8449E47F26E0DF2D0082AD03 /* LocatioViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
