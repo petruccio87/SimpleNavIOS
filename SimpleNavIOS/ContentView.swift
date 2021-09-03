@@ -79,7 +79,7 @@ struct TrackingView: View {
     
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $region, showsUserLocation: true)
+            Map(coordinateRegion: $region, showsUserLocation: true, userTrackingMode: .constant(userTrackingMode))
                 .edgesIgnoringSafeArea(.all)
             VStack {
                 Spacer()
@@ -149,7 +149,8 @@ struct TrackingView: View {
 //        if region.span.longitudeDelta < 90 { region.span.longitudeDelta += 10 }
     }
     private func userTrackingToggle() {
-        locationViewModel.userTrackingToggle()
+        userTrackingMode = .follow
+//        locationViewModel.userTrackingToggle()
     }
 
 }
