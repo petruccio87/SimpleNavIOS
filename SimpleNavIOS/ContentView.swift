@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 
 struct ContentView: View {
-    @ObservedObject var locationViewModel = LocationViewModel()
+    @StateObject var locationViewModel = LocationViewModel()
     
     var body: some View {
         switch locationViewModel.authorizationStatus {
@@ -74,12 +74,13 @@ struct TrackingView: View {
     @EnvironmentObject var locationViewModel: LocationViewModel
 //    @State var isUserTracking = true
     
-    @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.50007773, longitude: -0.1246402) , span: MKCoordinateSpan(latitudeDelta: 5, longitudeDelta: 5))
-    @State var userTrackingMode: MapUserTrackingMode = .follow
+//    @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.50007773, longitude: -0.1246402) , span: MKCoordinateSpan(latitudeDelta: 5, longitudeDelta: 5))
+//    @State var userTrackingMode: MapUserTrackingMode = .follow
     
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $region, showsUserLocation: true, userTrackingMode: .constant(userTrackingMode))
+//            Map(coordinateRegion: .constant(locationViewModel.mapRegion), showsUserLocation: true, userTrackingMode: .constant(locationViewModel.userTrackingMode))
+            Map(coordinateRegion: .constant(locationViewModel.mapRegion), showsUserLocation: true)
                 .edgesIgnoringSafeArea(.all)
             VStack {
                 Spacer()
@@ -137,20 +138,20 @@ struct TrackingView: View {
         }
     }
     private func zoomIn() {
-        userTrackingMode = .none
+//        userTrackingMode = .none
         locationViewModel.zoomIn()
 //        if region.span.latitudeDelta > 10 { region.span.latitudeDelta -= 10 }
 //        if region.span.longitudeDelta > 10 { region.span.longitudeDelta -= 10 }
     }
     private func zoomOut() {
-        userTrackingMode = .none
+//        userTrackingMode = .none
         locationViewModel.zoomOut()
 //        if region.span.latitudeDelta < 90 { region.span.latitudeDelta += 10 }
 //        if region.span.longitudeDelta < 90 { region.span.longitudeDelta += 10 }
     }
     private func userTrackingToggle() {
-        userTrackingMode = .follow
-//        locationViewModel.userTrackingToggle()
+//        userTrackingMode = .follow
+        locationViewModel.userTrackingToggle()
     }
 
 }
