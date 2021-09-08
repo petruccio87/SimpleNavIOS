@@ -85,6 +85,18 @@ struct MapView: View {
         )
     )
     
+    var isUserTracking: Bool {
+        get {
+            if userTrackingMode == .follow {
+                return true
+                
+            } else {
+                return false
+                
+            }
+        }
+    }
+    
     func toggleTrack() {
         if userTrackingMode == .follow {
             userTrackingMode = .none
@@ -147,7 +159,9 @@ struct MapView: View {
                                 withAnimation{
                                     toggleTrack()
                                 }
-                        }.padding(5)
+                            }
+                            .padding(5)
+                            .opacity(isUserTracking ? 1 : 0.6)
                     }.padding(.trailing, 20)
                 }.padding(.bottom, 100)
             }
