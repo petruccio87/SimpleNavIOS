@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		840E98F626E8C88F0089C1AD /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840E98F526E8C88F0089C1AD /* MapView.swift */; };
 		8449E45426E0D29C0082AD03 /* SimpleNavIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8449E45326E0D29C0082AD03 /* SimpleNavIOSApp.swift */; };
 		8449E45626E0D29C0082AD03 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8449E45526E0D29C0082AD03 /* ContentView.swift */; };
 		8449E45826E0D2A70082AD03 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8449E45726E0D2A70082AD03 /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		840E98F526E8C88F0089C1AD /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = SOURCE_ROOT; };
 		8449E45026E0D29C0082AD03 /* SimpleNavIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleNavIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8449E45326E0D29C0082AD03 /* SimpleNavIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNavIOSApp.swift; sourceTree = "<group>"; };
 		8449E45526E0D29C0082AD03 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 		8449E45226E0D29C0082AD03 /* SimpleNavIOS */ = {
 			isa = PBXGroup;
 			children = (
+				840E98F526E8C88F0089C1AD /* MapView.swift */,
 				8449E45326E0D29C0082AD03 /* SimpleNavIOSApp.swift */,
 				8449E48026E2243C0082AD03 /* LocationDataModel.swift */,
 				8449E45526E0D29C0082AD03 /* ContentView.swift */,
@@ -267,6 +270,7 @@
 			files = (
 				8449E45626E0D29C0082AD03 /* ContentView.swift in Sources */,
 				8449E45426E0D29C0082AD03 /* SimpleNavIOSApp.swift in Sources */,
+				840E98F626E8C88F0089C1AD /* MapView.swift in Sources */,
 				8449E48126E2243C0082AD03 /* LocationDataModel.swift in Sources */,
 				8449E47F26E0DF2D0082AD03 /* LocatioViewModel.swift in Sources */,
 			);
