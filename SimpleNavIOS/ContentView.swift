@@ -21,7 +21,8 @@ struct ContentView: View {
         case .denied:
             ErrorView(errorText: "The app does not have location permissions. Please enable them in settings.")
         case .authorizedAlways, .authorizedWhenInUse:
-            TrackingView()
+//            TrackingView()
+            MapView()
                 .environmentObject(locationViewModel)
         default:
             Text("Unexpected status")
@@ -70,29 +71,62 @@ struct ErrorView: View {
     }
 }
 
-struct TrackingView: View {
+struct MapView: View {
     @EnvironmentObject var locationViewModel: LocationViewModel
-//    @State var isUserTracking = true
+    @State private var userTrackingMode: MapUserTrackingMode = .follow
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(
+            latitude: 25.7617,
+            longitude: 80.1918
+        ),
+        span: MKCoordinateSpan(
+            latitudeDelta: 10,
+            longitudeDelta: 10
+        )
+    )
     
-//    @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.50007773, longitude: -0.1246402) , span: MKCoordinateSpan(latitudeDelta: 5, longitudeDelta: 5))
-//    @State var userTrackingMode: MapUserTrackingMode = .follow
-    
+    func toggleTrack() {
+        if userTrackingMode == .follow {
+            userTrackingMode = .none
+        } else {
+            userTrackingMode = .follow
+        }
+    }
+    func zoomIn() {
+        region.span = MKCoordinateSpan(
+            latitudeDelta: region.span.latitudeDelta * 0.7,
+            longitudeDelta: region.span.longitudeDelta * 0.7
+        )
+        print ("ZoomIn \(region.span.latitudeDelta) : \(region.span.longitudeDelta)")
+    }
+    func zoomOut() {
+        if (region.span.latitudeDelta < 150 || region.span.longitudeDelta < 150) {
+            region.span = MKCoordinateSpan(
+                latitudeDelta: region.span.latitudeDelta / 0.7,
+                longitudeDelta: region.span.longitudeDelta / 0.7
+            )
+        }
+        print ("ZoomIn \(region.span.latitudeDelta) : \(region.span.longitudeDelta)")
+    }
+
     var body: some View {
         ZStack {
-//            Map(coordinateRegion: .constant(locationViewModel.mapRegion), showsUserLocation: true, userTrackingMode: .constant(locationViewModel.userTrackingMode))
-            Map(coordinateRegion: .constant(locationViewModel.mapRegion), showsUserLocation: true)
-                .edgesIgnoringSafeArea(.all)
-            VStack {
+            Map(coordinateRegion: $region,
+                interactionModes: MapInteractionModes.all,
+                showsUserLocation: true,
+                userTrackingMode: $userTrackingMode
+                ).edgesIgnoringSafeArea(.all)
+            VStack{
                 Spacer()
-                HStack {
+                HStack{
                     Image(systemName: "location.circle")
                         .resizable()
                         .frame(width: 150, height: 150)
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(.blue)
                         .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
                         .rotationEffect(.init(degrees: 70))
                     Spacer()
-                    VStack {
+                    VStack{
                         Image(systemName: "minus.circle")
                             .font(.system(size: 40))
                             .onTapGesture {
@@ -110,51 +144,153 @@ struct TrackingView: View {
                         Image(systemName: "location.circle")
                             .font(.system(size: 40))
                             .onTapGesture {
-                                withAnimation {
-                                    userTrackingToggle()
+                                withAnimation{
+                                    toggleTrack()
                                 }
                         }.padding(5)
-//                        if locationViewModel.isUserTracking {
-//                            Image(systemName: "location.circle")
-//                                .font(.system(size: 40))
-//                                .onTapGesture {
-//                                    withAnimation {
-//                                        userTrackingToggle()
-//                                    }
-//                            }.padding(5)
-//                        } else {
-//                            Image(systemName: "location.circle")
-//                                .font(.system(size: 40))
-//                                .onTapGesture {
-//                                    withAnimation {
-//                                        userTrackingToggle()
-//                                    }
-//                                }.padding(5).opacity(0.5)
-//                        }
-                    }.padding(2)
-                    .foregroundColor(.red)
-                }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
-            }.padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
+                    }.padding(.trailing, 20)
+                }.padding(.bottom, 100)
+            }
         }
     }
-    private func zoomIn() {
-//        userTrackingMode = .none
-        locationViewModel.zoomIn()
-//        if region.span.latitudeDelta > 10 { region.span.latitudeDelta -= 10 }
-//        if region.span.longitudeDelta > 10 { region.span.longitudeDelta -= 10 }
-    }
-    private func zoomOut() {
-//        userTrackingMode = .none
-        locationViewModel.zoomOut()
-//        if region.span.latitudeDelta < 90 { region.span.latitudeDelta += 10 }
-//        if region.span.longitudeDelta < 90 { region.span.longitudeDelta += 10 }
-    }
-    private func userTrackingToggle() {
-//        userTrackingMode = .follow
-        locationViewModel.userTrackingToggle()
-    }
-
 }
+
+//struct TrackingView: View {
+//    @EnvironmentObject var locationViewModel: LocationViewModel
+////    @State var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.50007773, longitude: -0.1246402) , span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+////    @State var userTrackingMode: MapUserTrackingMode = .none
+////    var map = MapView()
+//
+//    var body: some View {
+//        Text("lat: \(locationViewModel.mapRegion.center.latitude), long: \(locationViewModel.mapRegion.center.longitude). Zoom: \(locationViewModel.mapRegion.span.latitudeDelta)")
+//        ZStack {
+//            Map(coordinateRegion: $locationViewModel.mapRegion, showsUserLocation: true)
+//                    .edgesIgnoringSafeArea(.all)
+//                    .gesture(DragGesture().onEnded{ noneed in stopUserTracking() })
+////            map
+////                .edgesIgnoringSafeArea(.all)
+////                .gesture(DragGesture().onEnded{ noneed in map.stopUserTracking(self) })
+//            VStack {
+//                Spacer()
+//                HStack {
+//                    Image(systemName: "location.circle")
+//                        .resizable()
+//                        .frame(width: 150, height: 150)
+//                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+//                        .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+//                        .rotationEffect(.init(degrees: 70))
+//                    Spacer()
+//                    VStack {
+//                        Image(systemName: "minus.circle")
+//                            .font(.system(size: 40))
+//                            .onTapGesture {
+//                                withAnimation {
+//                                    zoomOut()
+//                                }
+//                        }.padding(5)
+//                        Image(systemName: "plus.circle")
+//                            .font(.system(size: 40))
+//                            .onTapGesture {
+//                                withAnimation {
+//                                    zoomIn()
+//                                }
+//                        }.padding(5)
+//                        Image(systemName: "location.circle")
+//                            .font(.system(size: 40))
+//                            .onTapGesture {
+//                                userTrackingToggle()
+////                                    locationViewModel.userTrackingToggle()
+////                                    startUserTracking()
+//
+//                        }.padding(5)
+////                        if locationViewModel.isUserTracking {
+////                            Image(systemName: "location.circle")
+////                                .font(.system(size: 40))
+////                                .onTapGesture {
+////                                    withAnimation {
+////                                        userTrackingToggle()
+////                                    }
+////                            }.padding(5)
+////                        } else {
+////                            Image(systemName: "location.circle")
+////                                .font(.system(size: 40))
+////                                .onTapGesture {
+////                                    withAnimation {
+////                                        userTrackingToggle()
+////                                    }
+////                                }.padding(5).opacity(0.5)
+////                        }
+//                    }.padding(2)
+//                    .foregroundColor(.red)
+//                }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
+//            }.padding(EdgeInsets(top: 0, leading: 0, bottom: 100, trailing: 0))
+//        }
+//    }
+//    private func zoomIn() {
+////        userTrackingMode = .none
+//        locationViewModel.zoomIn()
+////        if region.span.latitudeDelta > 10 { region.span.latitudeDelta -= 10 }
+////        if region.span.longitudeDelta > 10 { region.span.longitudeDelta -= 10 }
+////        mapRegion.span.latitudeDelta *= 0.7
+////        mapRegion.span.longitudeDelta *= 0.7
+////        print ("ZoomIn \(mapRegion.span.latitudeDelta) : \(mapRegion.span.longitudeDelta)")
+//    }
+//    private func zoomOut() {
+////        userTrackingMode = .none
+//        locationViewModel.zoomOut()
+////        if region.span.latitudeDelta < 90 { region.span.latitudeDelta += 10 }
+////        if region.span.longitudeDelta < 90 { region.span.longitudeDelta += 10 }
+////        if (mapRegion.span.latitudeDelta < 100 || mapRegion.span.longitudeDelta < 100) {
+////            mapRegion.span.latitudeDelta /= 0.7
+////            mapRegion.span.longitudeDelta /= 0.7
+////        }
+////        print ("ZoomIn \(mapRegion.span.latitudeDelta) : \(mapRegion.span.longitudeDelta)")
+//    }
+//    private func userTrackingToggle() {
+////        if userTrackingMode == .follow {
+////            userTrackingMode = .none
+////        } else {
+////            userTrackingMode = .follow
+////        }
+////        userTrackingMode = .follow
+////        print("View: userTrackingMode: \(locationViewModel.isUserTracking)")
+//        locationViewModel.userTrackingToggle()
+//    }
+////    private func startUserTracking() {
+////        userTrackingMode = .follow
+////    }
+//     private func stopUserTracking() {
+//        locationViewModel.stopUserTracking()
+////        userTrackingMode = .none
+//    }
+//
+//}
+//
+//struct MapView: UIViewRepresentable {
+//    func makeUIView(context: Context) -> MKMapView {
+//        MKMapView(frame: .zero)
+//    }
+//    func updateUIView(_ uiView: MKMapView, context: Context) {
+//        let coordinate = CLLocationCoordinate2D(
+//            latitude: 51.50007773,
+//            longitude: -0.1246402
+//        )
+//        let span = MKCoordinateSpan(
+//            latitudeDelta: 0.05,
+//            longitudeDelta: 0.05
+//        )
+//        let region = MKCoordinateRegion(center: coordinate, span: span)
+//        uiView.setRegion(region, animated: true)
+//        uiView.showsUserLocation = true
+//        uiView.userTrackingMode = .follow
+//    }
+//    func startUserTracking(_ uiView: MKMapView) {
+//        uiView.setUserTrackingMode(.follow, animated: true)
+//    }
+//    func stopUserTracking(_ uiView: MKMapView) {
+//        uiView.setUserTrackingMode(.none, animated: true)
+//    }
+//}
 
 
 
@@ -164,6 +300,6 @@ struct TrackingView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
 //        ContentView()
-        TrackingView()
+        MapView()
     }
 }
