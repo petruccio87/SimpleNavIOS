@@ -76,18 +76,37 @@ struct TrackingView: View {
     
     var body: some View {
         ZStack{
-            MapView()
+            MapView().environmentObject(locationViewModel)
             VStack{
                 Spacer()
                 HStack{
-                    Image(systemName: "location.circle")
-                        .resizable()
-                        .frame(width: 150, height: 150)
-                        .foregroundColor(.blue)
-//                        .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
-                        .rotationEffect(.init(degrees: 60))
+                    VStack{
+                        Image(systemName: "location.circle")
+                            .resizable()
+                            .frame(width: 150, height: 150)
+                            .foregroundColor(.blue)
+    //                        .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+                            .rotationEffect(.init(degrees: 60))
+                        if locationViewModel.isDistance {
+                            Text("Distance: \(locationViewModel.distance) meters")
+                            .foregroundColor(.blue)
+                            Text("Bearing: \(locationViewModel.bearingString)")
+                            Text("Direction: \(locationViewModel.directionToPointString)")
+
+                        } else {
+                            Text("")
+                        }
+                    }
                     Spacer()
                 }.padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+                TextField("Enter Address", text: $locationViewModel.destAddress, onEditingChanged: {_ in
+                    print("entered: \(locationViewModel.destAddress)")
+                }, onCommit: {
+                    locationViewModel.getCoordsByAddress()
+                    print("enter commit")
+                })
+                .padding(10)
+                .background(RoundedRectangle(cornerRadius: 25.0).foregroundColor(.white))
             }
         }
     }

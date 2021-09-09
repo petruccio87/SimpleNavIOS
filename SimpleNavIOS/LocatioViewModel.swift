@@ -10,10 +10,59 @@ import CoreLocation
 import MapKit
 import SwiftUI
 
+struct Destination: Identifiable {
+    let id = UUID()
+    let name: String
+    let location: CLLocation
+}
+
 class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var lastSeenLocation: CLLocation?
     var currentPlacemark: CLPlacemark?
+    var destAddress = ""
+    @Published var destPins: [Destination] = []
+    @Published var distance = ""
+    var isDistance: Bool {
+        get {
+            if distance == "" {
+                return false
+            } else {
+                return true
+            }
+        }
+    }
+    var heading: CLLocationDirection? = 0
+    var bearing: CLLocationDirection?
+    var bearingString: String {
+        get {
+            if let tmp = bearing {
+                return String(tmp)
+            } else {
+                return ""
+            }
+        }
+    }
+    var directionToPoint: CLLocationDirection? {
+        get {
+            if heading != nil, bearing != nil {
+                let result = bearing! - heading!
+                return result
+            } else {
+                return nil
+            }
+        }
+    }
+    var directionToPointString: String {
+        get {
+            if let tmp = directionToPoint {
+                return String(tmp)
+            } else {
+                return ""
+            }
+        }
+    }
+
     
     private static func createDataModel() -> LocationDataModel {
         LocationDataModel()
@@ -47,6 +96,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
     }
     
     
@@ -62,7 +112,12 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         lastSeenLocation = location
+        getDistanceAndBearing()
         fetchCountryAndCity(for: locations.first)
+    }
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        heading = newHeading.trueHeading
+        print("Heading: \(newHeading.trueHeading)")
     }
 
     func fetchCountryAndCity(for location: CLLocation?) {
@@ -75,6 +130,53 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 //            }
         }
     }
-        
     
+    func getDistanceAndBearing() {
+        guard let location = lastSeenLocation  else { return }
+        if !destPins.isEmpty {
+            distance = String(Int(location.distance(from: destPins.first!.location)))
+            bearing = getBearingBetweenTwoPoints(from: location, to: destPins.first!.location)
+//            print("distance: \(distance) meters")
+        }
+    }
+    
+    func getCoordsByAddress() {
+        let address = destAddress
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(address) { [self] (placemarks, error) in
+            if error == nil {
+                if let placemark = placemarks?[0] {
+                    let location = placemark.location!
+                    print("coords for address: \(location.coordinate.latitude), \(location.coordinate.longitude)")
+                    let dest = Destination(name: address,
+                                           location: location)
+                    destPins.removeAll()
+                    destPins.append(dest)
+//                    completionHandler(location.coordinate, nil)
+                    return
+                }
+                
+            }
+        }
+    }
+    
+    func degreesToRadians(degrees: Double) -> Double { return degrees * .pi / 180.0 }
+    func radiansToDegrees(radians: Double) -> Double { return radians * 180.0 / .pi }
+    
+    func getBearingBetweenTwoPoints(from point1 : CLLocation, to point2 : CLLocation) -> CLLocationDirection {
+
+        let lat1 = degreesToRadians(degrees: point1.coordinate.latitude)
+        let lon1 = degreesToRadians(degrees: point1.coordinate.longitude)
+
+        let lat2 = degreesToRadians(degrees: point2.coordinate.latitude)
+        let lon2 = degreesToRadians(degrees: point2.coordinate.longitude)
+
+        let dLon = lon2 - lon1
+
+        let y = sin(dLon) * cos(lat2)
+        let x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
+        let radiansBearing = atan2(y, x)
+
+        return radiansToDegrees(radians: radiansBearing)
+    }
 }

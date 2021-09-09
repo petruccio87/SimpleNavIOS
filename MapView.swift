@@ -9,11 +9,12 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    @EnvironmentObject var locationViewModel: LocationViewModel
     @State private var userTrackingMode: MapUserTrackingMode = .follow
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(
-            latitude: 25.7617,
-            longitude: 80.1918
+            latitude: 37.759351,
+            longitude: -122.446913
         ),
         span: MKCoordinateSpan(
             latitudeDelta: 10,
@@ -54,7 +55,7 @@ struct MapView: View {
                 longitudeDelta: region.span.longitudeDelta / 0.7
             )
         }
-        print ("ZoomIn \(region.span.latitudeDelta) : \(region.span.longitudeDelta)")
+        print ("ZoomOut \(region.span.latitudeDelta) : \(region.span.longitudeDelta)")
     }
 
     var body: some View {
@@ -62,8 +63,15 @@ struct MapView: View {
             Map(coordinateRegion: $region,
                 interactionModes: MapInteractionModes.all,
                 showsUserLocation: true,
-                userTrackingMode: $userTrackingMode
-                ).edgesIgnoringSafeArea(.all)
+                userTrackingMode: $userTrackingMode,
+                annotationItems: locationViewModel.destPins
+                ) { dest in
+                MapAnnotation(coordinate: dest.location.coordinate, content: {
+                    Text(dest.name).foregroundColor(.red)
+                    Image(systemName: "pin.circle.fill").foregroundColor(.red)
+                })
+                }
+            .edgesIgnoringSafeArea(.all)
             VStack{
                 Spacer()
                 HStack{
