@@ -9,10 +9,6 @@ import SwiftUI
 import MapKit
 
 struct MyMKMapView: UIViewRepresentable {
-//    @EnvironmentObject var locationViewModel: LocationViewModel
-    
-//    @Binding var centerCoordinate: CLLocationCoordinate2D
-//    @Binding var span: MKCoordinateSpan
     @Binding var region: MKCoordinateRegion
     @Binding var userTrackingMode: MKUserTrackingMode
     
