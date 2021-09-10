@@ -86,7 +86,7 @@ struct TrackingView: View {
                             .frame(width: 150, height: 150)
                             .foregroundColor(.blue)
     //                        .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
-                            .rotationEffect(.init(degrees: 60))
+                            .rotationEffect(.degrees(locationViewModel.directionToPoint ?? 0))
                         if locationViewModel.isDistance {
                             Text("Distance: \(locationViewModel.distance) meters")
                             .foregroundColor(.blue)
