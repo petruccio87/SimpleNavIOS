@@ -10,18 +10,18 @@ import CoreLocation
 import MapKit
 import SwiftUI
 
-struct Destination: Identifiable {
-    let id = UUID()
-    let name: String
-    let location: CLLocation
-}
+//struct Destination: Identifiable {
+//    let id = UUID()
+//    let name: String
+//    let location: CLLocation
+//}
 
 class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var lastSeenLocation: CLLocation?
     var currentPlacemark: CLPlacemark?
     var destAddress = ""
-    @Published var destPins: [Destination] = []
+    @Published var destPins = [MKPointAnnotation]()
     @Published var distance = ""
     var isDistance: Bool {
         get {
@@ -134,8 +134,9 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     func getDistanceAndBearing() {
         guard let location = lastSeenLocation  else { return }
         if !destPins.isEmpty {
-            distance = String(Int(location.distance(from: destPins.first!.location)))
-            bearing = getBearingBetweenTwoPoints(from: location, to: destPins.first!.location)
+            let destLocation = CLLocation(latitude: destPins.first!.coordinate.latitude, longitude: destPins.first!.coordinate.longitude)
+            distance = String(Int(location.distance(from: destLocation )))
+            bearing = getBearingBetweenTwoPoints(from: location, to: destLocation)
 //            print("distance: \(distance) meters")
         }
     }
@@ -148,10 +149,15 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
                 if let placemark = placemarks?[0] {
                     let location = placemark.location!
                     print("coords for address: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                    let dest = Destination(name: address,
-                                           location: location)
+                    let newDest = MKPointAnnotation()
+                    newDest.coordinate = location.coordinate
+                    newDest.title = address
+//                    self.locations.append(newLocation)
+                    
+//                    let dest = Destination(name: address,
+//                                           location: location)
                     destPins.removeAll()
-                    destPins.append(dest)
+                    destPins.append(newDest)
 //                    completionHandler(location.coordinate, nil)
                     return
                 }
