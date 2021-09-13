@@ -61,9 +61,9 @@ struct MapView: View {
         ZStack {
             MyMKMapView(region: $region, userTrackingMode: $userTrackingMode, annotations: locationViewModel.destPins)
                 .edgesIgnoringSafeArea(.all)
-            #if DEBUG
-            Text("lat: \(region.center.latitude) lng: \(region.center.longitude) zoom: \(region.span.latitudeDelta) Track: \(userTrackingMode.rawValue)")
-            #endif
+//            #if DEBUG
+//            Text("lat: \(region.center.latitude) lng: \(region.center.longitude) zoom: \(region.span.latitudeDelta) Track: \(userTrackingMode.rawValue)")
+//            #endif
             VStack{
                 Spacer()
                 HStack{

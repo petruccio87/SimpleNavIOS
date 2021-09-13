@@ -50,7 +50,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
                 if result >= 360 {
                     result -= 360
                 }
-                return result
+                return -result
             } else {
                 return nil
             }

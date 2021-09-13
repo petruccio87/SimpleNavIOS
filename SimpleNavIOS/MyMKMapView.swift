@@ -28,9 +28,9 @@ struct MyMKMapView: UIViewRepresentable {
             view.removeAnnotations(view.annotations)
             view.addAnnotations(annotations)
         }
-//        if view.region == region {
+        if view.region != region {
             view.setRegion(region, animated: true)
-//        }
+        }
     }
     
     func makeCoordinator() -> Coordinator {
