@@ -156,7 +156,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         if tmp >= 360 {
             heading = 0
         } else {
-            heading = tmp + 10
+            heading = tmp + 20
         }
         print(heading)
     }

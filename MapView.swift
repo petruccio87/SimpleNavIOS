@@ -10,7 +10,7 @@ import MapKit
 
 struct MapView: View {
     @EnvironmentObject var locationViewModel: LocationViewModel
-    @State private var userTrackingMode: MKUserTrackingMode = .followWithHeading
+    @State private var userTrackingMode: MKUserTrackingMode = .none
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(
             latitude: 37.759351,

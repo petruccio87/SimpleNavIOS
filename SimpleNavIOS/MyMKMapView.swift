@@ -27,6 +27,7 @@ struct MyMKMapView: UIViewRepresentable {
         if annotations.first?.coordinate != view.annotations.first?.coordinate {
             view.removeAnnotations(view.annotations)
             view.addAnnotations(annotations)
+            view.fitAllMarkers(shouldIncludeCurrentLocation: true)
         }
         if view.region != region {
             view.setRegion(region, animated: true)
@@ -67,7 +68,7 @@ struct MyMKMapView: UIViewRepresentable {
         
         func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
 //            print("viewDidChange")
-            parent.region = mapView.region
+//            parent.region = mapView.region
         }
     }
     
@@ -91,6 +92,39 @@ extension MKCoordinateRegion: Equatable {
     public static func == (lhs: MKCoordinateRegion, rhs: MKCoordinateRegion) -> Bool {
         if lhs.center == rhs.center, lhs.span == rhs.span { return true }
         else { return false }
+    }
+}
+
+extension MKMapView
+{
+    func fitAllMarkers(shouldIncludeCurrentLocation: Bool) {
+
+        if !shouldIncludeCurrentLocation
+        {
+            showAnnotations(annotations, animated: true)
+        }
+        else
+        {
+            var zoomRect = MKMapRect.null
+
+            let point = MKMapPoint(userLocation.coordinate)
+            let pointRect = MKMapRect(x: point.x, y: point.y, width: 0, height: 0)
+            zoomRect = zoomRect.union(pointRect)
+
+            for annotation in annotations {
+
+                let annotationPoint = MKMapPoint(annotation.coordinate)
+                let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: 0, height: 0)
+
+                if (zoomRect.isNull) {
+                    zoomRect = pointRect
+                } else {
+                    zoomRect = zoomRect.union(pointRect)
+                }
+            }
+
+            setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20), animated: true)
+        }
     }
 }
 
