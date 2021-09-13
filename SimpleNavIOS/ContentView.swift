@@ -81,12 +81,7 @@ struct TrackingView: View {
                 Spacer()
                 HStack{
                     VStack{
-                        Image(systemName: "location.circle")
-                            .resizable()
-                            .frame(width: 150, height: 150)
-                            .foregroundColor(.blue)
-    //                        .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
-                            .rotationEffect(.degrees(locationViewModel.directionToPoint ?? 0))
+                        CopmassView().environmentObject(locationViewModel)
                         if locationViewModel.isDistance {
                             Text("Distance: \(locationViewModel.distance) meters")
                             .foregroundColor(.blue)
@@ -117,9 +112,11 @@ struct TrackingView: View {
 
 
 
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
 //        ContentView()
-        TrackingView()
+        let locationViewModel = LocationViewModel()
+        TrackingView().environmentObject(locationViewModel)
     }
 }

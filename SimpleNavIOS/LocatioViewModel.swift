@@ -32,7 +32,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             }
         }
     }
-    var heading: CLLocationDirection? = 0
+    @Published var heading: CLLocationDirection? = 0
     var bearing: CLLocationDirection?
     var bearingString: String {
         get {
@@ -46,7 +46,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var directionToPoint: CLLocationDirection? {
         get {
             if heading != nil, bearing != nil {
-                var result = bearing! + heading!
+                var result = bearing! - heading!
                 if result >= 360 {
                     result -= 360
                 }
