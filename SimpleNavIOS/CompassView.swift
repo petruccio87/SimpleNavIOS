@@ -12,6 +12,8 @@ struct CopmassView: View {
     @State var angle: Double = 0
     
     var body: some View {
+        
+        Toggle("Demo heading", isOn: $locationViewModel.isDemoHeading)
         Slider(value: $angle, in: 0...360)
         Image(systemName: "location.circle")
             .resizable()

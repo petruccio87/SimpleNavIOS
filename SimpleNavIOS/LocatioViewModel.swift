@@ -21,6 +21,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var lastSeenLocation: CLLocation?
     var currentPlacemark: CLPlacemark?
     var destAddress = ""
+    var isDemoHeading = true
     @Published var destPins = [MKPointAnnotation]()
     @Published var distance = ""
     var isDistance: Bool {
@@ -119,7 +120,9 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.lastSeenLocation = location
             self.getDistance()
             self.fetchCountryAndCity(for: locations.first)
-            self.demoHeading()
+            if self.isDemoHeading {
+                self.demoHeading()
+            }
         }
     }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
@@ -158,7 +161,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         } else {
             heading = tmp + 20
         }
-        print(heading)
+        print(heading as Any)
     }
     func getBearing() {
         guard let location = lastSeenLocation  else { return }
