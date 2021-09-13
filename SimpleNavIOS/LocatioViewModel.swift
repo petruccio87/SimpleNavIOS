@@ -119,6 +119,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.lastSeenLocation = location
             self.getDistance()
             self.fetchCountryAndCity(for: locations.first)
+            self.demoHeading()
         }
     }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
@@ -150,6 +151,15 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
+    func demoHeading() {
+        guard let tmp = heading else { return }
+        if tmp >= 360 {
+            heading = 0
+        } else {
+            heading = tmp + 10
+        }
+        print(heading)
+    }
     func getBearing() {
         guard let location = lastSeenLocation  else { return }
         if !destPins.isEmpty {
