@@ -114,15 +114,19 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first else { return }
-        lastSeenLocation = location
-        getDistance()
-        fetchCountryAndCity(for: locations.first)
+        DispatchQueue.main.async {
+            guard let location = locations.first else { return }
+            self.lastSeenLocation = location
+            self.getDistance()
+            self.fetchCountryAndCity(for: locations.first)
+        }
     }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        heading = newHeading.trueHeading
-        getBearing()
-        print("Heading: \(newHeading.trueHeading)")
+        DispatchQueue.main.async {
+            self.heading = newHeading.trueHeading
+            self.getBearing()
+            print("Heading: \(newHeading.trueHeading)")
+        }
     }
 
     func fetchCountryAndCity(for location: CLLocation?) {
