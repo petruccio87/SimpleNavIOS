@@ -99,6 +99,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
+        locationManager.headingFilter = 5
         locationManager.startUpdatingHeading()
     }
     
@@ -115,11 +116,12 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
         lastSeenLocation = location
-        getDistanceAndBearing()
+        getDistance()
         fetchCountryAndCity(for: locations.first)
     }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         heading = newHeading.trueHeading
+        getBearing()
         print("Heading: \(newHeading.trueHeading)")
     }
 
@@ -134,11 +136,21 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
-    func getDistanceAndBearing() {
+    func getDistance() {
         guard let location = lastSeenLocation  else { return }
         if !destPins.isEmpty {
             let destLocation = CLLocation(latitude: destPins.first!.coordinate.latitude, longitude: destPins.first!.coordinate.longitude)
             distance = String(Int(location.distance(from: destLocation )))
+//            bearing = getBearingBetweenTwoPoints(from: location, to: destLocation)
+//            print("distance: \(distance) meters")
+        }
+    }
+    
+    func getBearing() {
+        guard let location = lastSeenLocation  else { return }
+        if !destPins.isEmpty {
+            let destLocation = CLLocation(latitude: destPins.first!.coordinate.latitude, longitude: destPins.first!.coordinate.longitude)
+//            distance = String(Int(location.distance(from: destLocation )))
             bearing = getBearingBetweenTwoPoints(from: location, to: destLocation)
 //            print("distance: \(distance) meters")
         }
