@@ -21,8 +21,9 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var lastSeenLocation: CLLocation?
     var currentPlacemark: CLPlacemark?
     var destAddress = ""
-    var isDemoHeading = true
-    @Published var destPins = [MKPointAnnotation]()
+    var isDemoHeading = false
+//    @Published var destPins = [MKPointAnnotation]()
+    @Published var destPins = [Landmark]()
     @Published var distance = ""
     var isDistance: Bool {
         get {
@@ -47,11 +48,13 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var directionToPoint: CLLocationDirection? {
         get {
             if heading != nil, bearing != nil {
-                var result = bearing! - heading!
+                var result = -heading! + bearing!
                 if result >= 360 {
                     result -= 360
+                } else if result <= -360 {
+                    result += 360
                 }
-                return -result
+                return result
             } else {
                 return nil
             }
@@ -153,7 +156,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 //            print("distance: \(distance) meters")
         }
     }
-    
+/// demoHeading - for simulator, there is no heading
     func demoHeading() {
         guard let tmp = heading else { return }
         if tmp >= 360 {
@@ -181,15 +184,18 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
                 if let placemark = placemarks?[0] {
                     let location = placemark.location!
                     print("coords for address: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                    let newDest = MKPointAnnotation()
-                    newDest.coordinate = location.coordinate
-                    newDest.title = address
+//                    let newDest = Landmark(placemark: placemark)
+//                    newDest.coordinate = location.coordinate
+//                    newDest.title = address
 //                    self.locations.append(newLocation)
                     
 //                    let dest = Destination(name: address,
 //                                           location: location)
+                    let newDestPlacemark = MKPlacemark(placemark: placemark)
+//                    newDestPlacemark.coordinate = location.coordinate
+                    
                     destPins.removeAll()
-                    destPins.append(newDest)
+                    destPins.append(Landmark(placemark: newDestPlacemark))
 //                    completionHandler(location.coordinate, nil)
                     return
                 }

@@ -77,6 +77,7 @@ struct TrackingView: View {
     var body: some View {
         ZStack{
             MapView().environmentObject(locationViewModel)
+//            MapView(landmarks: locationViewModel.
             VStack{
                 Spacer()
                 HStack{
@@ -101,7 +102,8 @@ struct TrackingView: View {
                     print("enter commit")
                 })
                 .padding(10)
-                .background(RoundedRectangle(cornerRadius: 25.0).foregroundColor(.white))
+                .background(RoundedRectangle(cornerRadius: 25.0).fill(.white))
+                .foregroundColor(.black)
             }
         }
     }
