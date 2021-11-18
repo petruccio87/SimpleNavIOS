@@ -35,11 +35,13 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     @Published var heading: CLLocationDirection? = 0
+    var oldHeading: CLLocationDirection = 0
+    var rotationCount = 0
     var bearing: CLLocationDirection?
     var bearingString: String {
         get {
             if let tmp = bearing {
-                return String(tmp)
+                return String(String(tmp).prefix(7))
             } else {
                 return ""
             }
@@ -49,11 +51,11 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         get {
             if heading != nil, bearing != nil {
                 var result = -heading! + bearing!
-                if result >= 360 {
-                    result -= 360
-                } else if result <= -360 {
-                    result += 360
-                }
+//                if result >= 360 {
+//                    result -= 360
+//                } else if result <= -360 {
+//                    result += 360
+//                }
                 return result
             } else {
                 return nil
@@ -63,7 +65,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var directionToPointString: String {
         get {
             if let tmp = directionToPoint {
-                return String(tmp)
+                return String(String(tmp).prefix(7))
             } else {
                 return ""
             }
@@ -130,10 +132,31 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         DispatchQueue.main.async {
-            self.heading = newHeading.trueHeading
+            self.oldHeading = self.heading ?? 0
+            self.heading = self.linearHeadingConverter(inHeading: newHeading.trueHeading)
             self.getBearing()
-            print("Heading: \(newHeading.trueHeading)")
+//            print("OldHeading: \(self.oldHeading) \n Heading: \(newHeading.trueHeading)")
+//            print(self.heading! - self.oldHeading)
         }
+    }
+    
+    func linearHeadingConverter(inHeading: CLLocationDirection) -> CLLocationDirection {
+        var linearHeading = inHeading + Double(360 * rotationCount)
+//        print("linear heading in: \(linearHeading)")
+
+        if (linearHeading - self.oldHeading) > 300 {
+            rotationCount -= 1
+        }
+        if (linearHeading - self.oldHeading) < -300 {
+            rotationCount += 1
+        }
+        linearHeading = inHeading + Double(360 * rotationCount)
+
+//        print("OldHeading: \(self.oldHeading) \n Heading: \(inHeading)")
+//        print("rotation count: \(self.rotationCount)")
+//        print("linear heading out: \(linearHeading)")
+        print(directionToPoint?.truncatingRemainder(dividingBy: 360))
+        return linearHeading
     }
 
     func fetchCountryAndCity(for location: CLLocation?) {
