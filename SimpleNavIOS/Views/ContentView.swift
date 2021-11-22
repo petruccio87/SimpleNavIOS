@@ -77,6 +77,7 @@ struct TrackingView: View {
     var body: some View {
         ZStack{
             MapView().environmentObject(locationViewModel)
+                .ignoresSafeArea(.keyboard)
 //            MapView(landmarks: locationViewModel.
             VStack{
                 Spacer()
@@ -95,6 +96,11 @@ struct TrackingView: View {
                     }
                     Spacer()
                 }.padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+                
+            }.padding(EdgeInsets(top: 0, leading: 0, bottom: 50, trailing: 0))
+                .ignoresSafeArea(.keyboard)
+            VStack{
+                Spacer()
                 TextField("Enter Address", text: $locationViewModel.destAddress, onEditingChanged: {_ in
                     print("entered: \(locationViewModel.destAddress)")
                 }, onCommit: {
@@ -104,7 +110,7 @@ struct TrackingView: View {
                 .padding(10)
                 .background(RoundedRectangle(cornerRadius: 25.0).fill(.white))
                 .foregroundColor(.black)
-            }
+            }.padding(EdgeInsets(top: 0, leading: 10, bottom: 35, trailing: 10))
         }
     }
 }

@@ -51,7 +51,7 @@ struct MapView: View {
                         .opacity(isUserTracking ? 0.3 : 1)
                 }.padding(.trailing, 20)
             }.padding(.bottom, 150)
-        }
+        }.ignoresSafeArea(.keyboard)
     }
 }
 
