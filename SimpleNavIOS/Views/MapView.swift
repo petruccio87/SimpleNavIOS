@@ -13,6 +13,7 @@ struct MapView: View {
 
 //    let landmarks : [Landmark]
     @State private var userTrackingMode: MKUserTrackingMode = .none
+    @State private var showRoutes = false
     
     var isUserTracking: Bool {
         get {
@@ -34,7 +35,7 @@ struct MapView: View {
     }
     
     var body: some View {
-        MyMKMapView(landmarks: locationViewModel.destPins, myuserTrackingMode: $userTrackingMode)
+        MyMKMapView(landmarks: locationViewModel.destPins, routes: locationViewModel.routes, showRoutes: $showRoutes, myuserTrackingMode: $userTrackingMode)
             .gesture(DragGesture().onChanged(){ _ in
                 userTrackingMode = .none
             })
@@ -61,6 +62,8 @@ struct MyMKMapView: UIViewRepresentable {
         var trackingUserLocation = true
     }
     let landmarks: [Landmark]
+    let routes: [MKRoute]
+    @Binding var showRoutes: Bool
     @Binding var myuserTrackingMode: MKUserTrackingMode
 
     
@@ -77,10 +80,11 @@ struct MyMKMapView: UIViewRepresentable {
     }
     
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        updateAnnotations(from: mapView)
+        updateAnnotations(for: mapView)
+        updateRoutes(for: mapView)
     }
     
-    private func updateAnnotations(from mapView: MKMapView) {
+    private func updateAnnotations(for mapView: MKMapView) {
         if landmarks.first?.coordinate != mapView.annotations.first?.coordinate {
             mapView.removeAnnotations(mapView.annotations)
             if let landmark = landmarks.first {
@@ -92,6 +96,17 @@ struct MyMKMapView: UIViewRepresentable {
 //        mapView.removeAnnotations(mapView.annotations)
 //        let annotations = landmarks.map(LandmarkAnnotation.init)
 //        mapView.addAnnotations(annotations)
+    }
+    
+    private func updateRoutes(for mapView: MKMapView) {
+        guard let route = routes.first else { return }
+        if showRoutes {
+            mapView.removeOverlays(mapView.overlays)
+            mapView.addOverlay(route.polyline)
+            print("updateRoutes: \(route.distance)")
+        } else {
+            mapView.removeOverlays(mapView.overlays)
+        }
     }
 }
 
@@ -124,6 +139,20 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("select annotation \(String(describing: view.annotation?.title ?? "no annotation"))")
+        control.showRoutes = true
+    }
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        print("deselect annotation \(String(describing: view.annotation?.title ?? "no annotation"))")
+        control.showRoutes = false
+    }
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if let routePolyline = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: routePolyline)
+            renderer.strokeColor = UIColor.systemBlue
+            renderer.lineWidth = 5
+            return renderer
+          }
+        return MKOverlayRenderer()
     }
 }
 
@@ -157,6 +186,8 @@ extension MKMapView {
             setVisibleMapRect(zoomRect, edgePadding: UIEdgeInsets(top: 30, left: 20, bottom: 120, right: 20), animated: true)
         }
     }
+    
+    
 }
 
 

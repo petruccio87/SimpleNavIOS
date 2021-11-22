@@ -24,6 +24,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var isDemoHeading = false
 //    @Published var destPins = [MKPointAnnotation]()
     @Published var destPins = [Landmark]()
+    @Published var routes = [MKRoute]()
     @Published var distance = ""
     var isDistance: Bool {
         get {
@@ -50,7 +51,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     var directionToPoint: CLLocationDirection? {
         get {
             if heading != nil, bearing != nil {
-                var result = -heading! + bearing!
+                let result = -heading! + bearing!
 //                if result >= 360 {
 //                    result -= 360
 //                } else if result <= -360 {
@@ -155,7 +156,7 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 //        print("OldHeading: \(self.oldHeading) \n Heading: \(inHeading)")
 //        print("rotation count: \(self.rotationCount)")
 //        print("linear heading out: \(linearHeading)")
-        print(directionToPoint?.truncatingRemainder(dividingBy: 360))
+//        print(directionToPoint?.truncatingRemainder(dividingBy: 360))
         return linearHeading
     }
 
@@ -219,12 +220,28 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
                     
                     destPins.removeAll()
                     destPins.append(Landmark(placemark: newDestPlacemark))
+                    findRoute(on: .walking)
 //                    completionHandler(location.coordinate, nil)
                     return
                 }
                 
             }
         }
+    }
+    
+    func findRoute(on vehicle: MKDirectionsTransportType) {
+        let request = MKDirections.Request()
+        guard let startPointCoords = lastSeenLocation?.coordinate else { return }
+        guard let endPointCoords = destPins.first?.coordinate else { return }
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: startPointCoords))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: endPointCoords))
+        request.transportType = vehicle
+        let directions = MKDirections(request: request)
+        directions.calculate { [self] response, error in
+            guard let route = response?.routes.first else { return }
+            self.routes.removeAll()
+            self.routes.append(route)
+          }
     }
     
     func degreesToRadians(degrees: Double) -> Double { return degrees * .pi / 180.0 }
