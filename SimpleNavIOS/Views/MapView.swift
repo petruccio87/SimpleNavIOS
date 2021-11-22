@@ -139,14 +139,18 @@ final class MapCoordinator: NSObject, MKMapViewDelegate {
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("select annotation \(String(describing: view.annotation?.title ?? "no annotation"))")
-        control.showRoutes = true
+        DispatchQueue.main.async {
+            self.control.showRoutes = true
+        }
     }
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         print("deselect annotation \(String(describing: view.annotation?.title ?? "no annotation"))")
-        control.showRoutes = false
+        DispatchQueue.main.async {
+            self.control.showRoutes = false
+        }
     }
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if let routePolyline = overlay as? MKPolyline {
+         if let routePolyline = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: routePolyline)
             renderer.strokeColor = UIColor.systemBlue
             renderer.lineWidth = 5
