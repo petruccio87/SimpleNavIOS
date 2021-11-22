@@ -241,6 +241,13 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             guard let route = response?.routes.first else { return }
             self.routes.removeAll()
             self.routes.append(route)
+//            print("route: \(route.distance)")
+//            mapView.addAnnotations([p1, p2])
+//            mapView.addOverlay(route.polyline)
+//            mapView.setVisibleMapRect(
+//              route.polyline.boundingMapRect,
+//              edgePadding: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
+//              animated: true)
           }
     }
     

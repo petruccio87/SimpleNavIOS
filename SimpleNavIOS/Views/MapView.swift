@@ -103,6 +103,10 @@ struct MyMKMapView: UIViewRepresentable {
         if showRoutes {
             mapView.removeOverlays(mapView.overlays)
             mapView.addOverlay(route.polyline)
+            mapView.setVisibleMapRect(
+              route.polyline.boundingMapRect,
+              edgePadding: UIEdgeInsets(top: 40, left: 40, bottom: 150, right: 40),
+              animated: true)
             print("updateRoutes: \(route.distance)")
         } else {
             mapView.removeOverlays(mapView.overlays)
